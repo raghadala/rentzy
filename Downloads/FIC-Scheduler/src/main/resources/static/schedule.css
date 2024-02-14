@@ -1,0 +1,121 @@
+.navbar {
+    background-color: rgba(33, 37, 41, 0.9) !important;
+}
+
+.navbar {
+    width: 100%;
+}
+
+.navbar-brand {
+    margin-right: auto;
+    margin-left: 0;
+}
+
+
+.scheduletableCenter table  {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    border-radius: 1em;
+    width: 100%; 
+    table-layout: fixed;
+}
+
+.scheduletableCenter td, th{
+    word-wrap: break-word;
+}
+
+th,
+td {
+    padding: 8px;
+    text-align: center;
+    border: 3px solid #19161c;
+    transition: transform 0.1s ease;
+    height: 30px;
+}
+
+th {
+    background-color: #c3c3c3;
+}
+    
+td{
+    background-color: white;
+}
+
+
+
+
+body {
+    background: #19161c;
+}
+
+.centerThis {
+
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.box {
+    position: relative;
+    transform: scale(0.8);
+    padding-top: 10px;
+}
+
+.input {
+    padding: 10px;
+    width: 80px;
+    height: 80px;
+    background: none;
+    border: 4px solid #7a7a7a;
+    border-radius: 50px;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 26px;
+    color: #ffffff;
+    outline: none;
+    transition: .5s;
+
+}
+
+.box input {
+    width: 400px;
+    background: #3b3640;
+    border-radius: 10px;
+}
+
+.box i {
+    position: absolute;
+    top: 40%;
+    right: 25px;
+    transform: translate(-50%, -50%);
+    font-size: 26px;
+    color: #eeeeee;
+    transition: .2s;
+    transform: scale(1.3);
+}
+
+.time-column {
+    background-color: #c8f7c8; 
+    font-weight: bold; 
+}
+
+.course {
+    font-size: 16px;
+    font-weight: bold;
+    color: rgb(15, 81, 23); 
+  }
+  
+  .instructor {
+    font-size: 14px;
+    color: green;
+  }
+  
+  .section {
+    font-size: 14px;
+    font-style: italic;
+    color: black; 
+  }
+
+
+
+

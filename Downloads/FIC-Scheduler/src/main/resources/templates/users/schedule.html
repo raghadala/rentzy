@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <title>Schedule</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+    <link rel="stylesheet" th:href="@{../schedule.css}">
+    <link rel="stylesheet" th:href="@{../pagebutton.css}">
+    <script th:src="@{../schedule.js}" defer></script>
+    <link rel="icon" type="image/x-icon" href="../fav.ico"> 
+    </link>
+    <script>
+        function togglePageTheme() {
+        var body = document.body;
+        body.classList.toggle('light-theme');
+        body.classList.toggle('dark-theme');
+        var buttonIcon = document.querySelector('#page_theme_toggle_button i');
+        buttonIcon.classList.toggle('fa-sun', body.classList.contains('light-theme'));
+        buttonIcon.classList.toggle('fa-moon', body.classList.contains('dark-theme'));
+
+        // Save the theme preference to localStorage
+        var selectedTheme = body.classList.contains('dark-theme') ? 'dark' : 'light';
+        localStorage.setItem('theme', selectedTheme);
+        }
+
+        window.onload = function () {
+        // Retrieve the theme preference from localStorage
+        var selectedTheme = localStorage.getItem('theme');
+
+        // If a theme preference is stored, set the theme and icon accordingly
+        if (selectedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+        } else {
+            document.body.classList.add('light-theme');
+        }
+
+        // Set the icon based on the current theme
+        var buttonIcon = document.querySelector('#page_theme_toggle_button i');
+        buttonIcon.classList.toggle('fa-sun', document.body.classList.contains('light-theme'));
+        buttonIcon.classList.toggle('fa-moon', document.body.classList.contains('dark-theme'));
+
+        // Add event listener to the page theme toggle button
+        var pageThemeToggleButton = document.getElementById('page_theme_toggle_button');
+        pageThemeToggleButton.addEventListener('click', togglePageTheme);
+        };
+    </script>
+    <style>
+        #page_theme_toggle_button {
+          background-color: Transparent;
+          border: none;
+          margin-right:15px;
+        }
+    
+        #page_theme_toggle_button .fa-sun {
+          color: #f7bd3d;
+          transition: color 0.3s ease;
+        }
+
+        #page_theme_toggle_button .fa-moon {
+          color: #495d79;
+          transition: color 0.3s ease;
+        }
+    
+        .btn-group {
+          padding-bottom: 18px;
+        }
+    
+        .wrapper {
+          display: grid;
+          grid-template-columns: auto auto;
+          gap: 20px;
+        }
+    
+        .about {
+          padding: 1em;
+        }
+    
+        @media (max-width: 768px) {
+          .wrapper {
+            grid-template-columns: auto;
+          }
+        }
+    
+    
+        /* Default light theme */
+        body.light-theme {
+          background-color:  #f9f9f9;
+          color: #000000;
+        }
+    
+        body.light-theme .navbar {
+          background-color: #333333;
+          color: #000000;
+        }
+
+        body.light-theme .box input {
+            background: rgb(216, 214, 218);
+        }
+        body.light-theme .timeRangeBox{
+            background:rgb(216, 214, 218);
+            color:#000000;
+        }
+    
+        /* Dark theme */
+        body.dark-theme {
+          background-color: hsl(223,10%,20%);
+          color: #000000;
+        }
+        body.dark-theme .navbar{
+          background-color: #1e1e1e;
+          color: #f7f7f7;
+        }
+        body.dark-theme .box input {
+            background: #444445;
+        }
+        body.dark-theme .timeRangeBox{
+            background:#444445;
+            color:#f7f7f7;
+        }
+        
+        body {
+          transition: 0.3s ease;
+        }
+        h3 {
+          text-align: center;
+          font-family: Serif;
+        }
+        p{
+          text-align: center;
+          font-family: Serif;
+        }
+      </style>
+</head>
+
+<body>
+    <div class="centerThis">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/login">
+                    <img style="width:100px; height: 40px;" src="../fic2.png" />
+                    <img style="position:relative; bottom:8px; width:150px; height: 60px;" src="../sfu.png" />
+                </a>
+                <button id="page_theme_toggle_button"><i class="fas fa-sun"></i></button>
+                <a href="/login" class="btn btn-success" role="button">
+                    <i class="fas fa-home"></i> Home
+                </a>
+    
+                <a href="/logout" class="btn btn-danger" role="button" style="margin-left: 10px;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+    
+            </div>
+        </nav>
+    
+        <div class="btn-group d-flex justify-content-center mt-3" role="group" aria-label="Button Group">
+            <a href="/availability" class="btn btn-success my-custom-button mx-3">Availability</a>
+            <a href="/schedule" class="btn btn-success my-custom-button mx-3 active">Schedule</a>
+        </div>
+    
+        <div class="box">
+            <form name="search" for="search-input">
+              <input type="text" id="search-input" class="input" name="txt" placeholder="Search Course/Instructor #" oninput="searchTable()">
+
+            </form>
+            <i class="fas fa-search"></i>
+        </div> 
+
+        <div class="timeRangeBox">
+          <p>AM : 8:30am - 12:30pm</p>
+          <p>PM : 1:30pm - 5:30pm</p>
+          <p>EVE : 5:45pm - 10:45pm</p>
+        </div>
+        <style>
+          .timeRangeBox {
+            position:static;
+            width:200px;
+            height: 120px;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-size: 15px;
+            font-weight:bold;
+            margin-bottom:10px;
+            margin-top:10px;
+          }
+          .timeRangeBox p{
+              font-family:Arial, Helvetica, sans-serif;
+          }
+        </style>
+
+    </div>
+
+      <div class="scheduletableCenter">
+        <table id="schedule">
+            <thead id="header">
+                <tr id="header-row"></tr>
+            </thead>
+            <tbody id="schedule-body"></tbody>
+        </table>
+      </div>  
+
+
+</body>
+
+<script>
+   function searchTable() {
+        const searchText = document.getElementById('search-input').value.trim().toLowerCase();
+    const rows = document.querySelectorAll('#schedule-body tr');
+
+    if (searchText === '') {
+      // If the search bar is empty, reset the background color of all cells and show all rows
+      rows.forEach((row) => {
+        const cells = row.querySelectorAll('td');
+        cells.forEach((cell, index) => {
+          if (index === 0) {
+            // Keep the first column (index 0) green
+            cell.style.backgroundColor = '#c8f7c8';
+          } else {
+            cell.style.backgroundColor = 'white'; }
+        });
+      });
+    } else {
+      // If the search bar has a search term, perform the search and highlight matched cells
+      rows.forEach((row) => {
+        const cells = row.querySelectorAll('td');
+        let rowMatched = false;
+
+        cells.forEach((cell, index) => {
+          const courseCell = cell.querySelector('.course');
+          const instructorCell = cell.querySelector('.instructor');
+          if (courseCell && instructorCell) {
+            const courseName = courseCell.textContent.trim().toLowerCase();
+            const instructorNum = instructorCell.textContent.trim().toLowerCase();
+            if (courseName.includes(searchText) || instructorNum.includes(searchText)) {
+              rowMatched = true;
+              cell.style.backgroundColor = '#84ff84';
+            } else {
+              cell.style.backgroundColor = 'white';
+            }
+          }
+        });
+
+        if (rowMatched) {
+          row.classList.add('matched');
+        } else {
+          row.classList.remove('matched');
+        }
+      });
+    }
+  }
+</script>
+
+</html>

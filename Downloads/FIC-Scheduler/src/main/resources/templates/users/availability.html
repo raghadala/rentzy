@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Professor Availability</title>
+    <link rel="stylesheet" th:href="@{../pagebutton.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{../timetable.css}">
+    <script th:src="@{../timetable.js}" defer></script>
+    <link rel="icon" type="image/x-icon" href="../fav.ico"> 
+    </link>
+
+    <script>
+        function togglePageTheme() {
+        var body = document.body;
+        body.classList.toggle('light-theme');
+        body.classList.toggle('dark-theme');
+        var buttonIcon = document.querySelector('#page_theme_toggle_button i');
+        buttonIcon.classList.toggle('fa-sun', body.classList.contains('light-theme'));
+        buttonIcon.classList.toggle('fa-moon', body.classList.contains('dark-theme'));
+
+        // Save the theme preference to localStorage
+        var selectedTheme = body.classList.contains('dark-theme') ? 'dark' : 'light';
+        localStorage.setItem('theme', selectedTheme);
+        }
+
+        window.onload = function () {
+        // Retrieve the theme preference from localStorage
+        var selectedTheme = localStorage.getItem('theme');
+
+        // If a theme preference is stored, set the theme and icon accordingly
+        if (selectedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+        } else {
+            document.body.classList.add('light-theme');
+        }
+
+        // Set the icon based on the current theme
+        var buttonIcon = document.querySelector('#page_theme_toggle_button i');
+        buttonIcon.classList.toggle('fa-sun', document.body.classList.contains('light-theme'));
+        buttonIcon.classList.toggle('fa-moon', document.body.classList.contains('dark-theme'));
+
+        // Add event listener to the page theme toggle button
+        var pageThemeToggleButton = document.getElementById('page_theme_toggle_button');
+        pageThemeToggleButton.addEventListener('click', togglePageTheme);
+        };
+    </script>
+    <style>
+        #page_theme_toggle_button {
+          background-color: Transparent;
+          border: none;
+          margin-right: 15px;
+        }
+    
+        #page_theme_toggle_button .fa-sun {
+          color: #f7bd3d;
+          transition: color 0.3s ease;
+        }
+
+        #page_theme_toggle_button .fa-moon {
+          color: #495d79;
+          transition: color 0.3s ease;
+        }
+    
+        .btn-group {
+          padding-bottom: 18px;
+        }
+    
+        .wrapper {
+          display: grid;
+          grid-template-columns: auto auto;
+          gap: 20px;
+        }
+    
+        .about {
+          padding: 1em;
+        }
+    
+        @media (max-width: 768px) {
+          .wrapper {
+            grid-template-columns: auto;
+          }
+        }
+    
+    
+        /* Default light theme */
+        body.light-theme {
+          background-color:  #f9f9f9;
+          color: #000000;
+        }
+    
+        body.light-theme .navbar {
+          background-color: #333333;
+          color: #000000;
+        }
+
+        body.light-theme .label{
+            color:#000000;
+            font-weight: bold;
+        }
+        body.light-theme .box input {
+            background: rgb(216, 214, 218);
+        }
+        body.light-theme .timeRangeBox{
+            background:rgb(216, 214, 218);
+            color:#000000;
+        }
+    
+        /* Dark theme */
+        body.dark-theme {
+          background-color: hsl(223,10%,20%);
+          color: hsl(223,10%,90%);
+        }
+        body.dark-theme .navbar{
+          background-color: #1e1e1e;
+          color: #f7f7f7;
+        }
+        body.dark-theme .label{
+            color:#f7f7f7;
+        }
+        body.dark-theme .box input {
+            background: #444445;
+        }
+        body.dark-theme .timeRangeBox{
+            background:#444445;
+            color:#f7f7f7;
+        }
+        
+    
+        body {
+          transition: 0.3s ease;
+        }
+        h3 {
+          text-align: center;
+          font-family: Serif;
+        }
+        p{
+          text-align: center;
+          font-family: Serif;
+        }
+      </style>
+
+</head>
+
+<body>
+    <div class="centerThis">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/login">
+                    <img style="width:100px; height: 40px;" src="../fic2.png" />
+                    <img style="position:relative; bottom:8px; width:150px; height: 60px;" src="../sfu.png" />
+                </a>
+                <button id="page_theme_toggle_button"><i class="fas fa-sun"></i></button>
+                <a href="/login" class="btn btn-success" role="button">
+                    <i class="fas fa-home"></i> Home
+                </a>
+
+                <a href="/logout" class="btn btn-danger" role="button" style="margin-left: 10px;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </nav>
+
+        <div class="btn-group d-flex justify-content-center mt-3" role="group" aria-label="Button Group">
+            <a href="/availability" class="btn btn-success my-custom-button mx-3 active">Availability</a>
+            <a href="/schedule" class="btn btn-success my-custom-button mx-3">Schedule</a>
+        </div>
+
+        <div class="box">
+            <form name="search" for="search-input">
+                <input type="text" id="search-input" class="input" name="txt" placeholder="Search Instructor #">
+            </form>
+            <i class="fas fa-search"></i>
+        </div>
+
+        <div id="checkbox-container" class="checkbox-wrapper">
+            <div class="table-wrapper">
+                <table>
+                <tr>
+                    <td><input type="checkbox" class="inp-cbx" id="filter-checkbox">
+                        <label class="cbx" for="filter-checkbox"><span>            
+                        <svg width="12px" height="10px"> 
+                            <use xlink:href="#check-1"></use>
+                        </svg></span><span>AM - Monday</span></label>
+                        <svg class="inline-svg">
+                            <symbol id="check-1" viewbox="0 0 12 10">
+                                <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                            </symbol>
+                        </svg>
+                    </td>
+                    <td><input type="checkbox" class="inp-cbx" id="filter-checkbox4">
+                        <label class="cbx" for="filter-checkbox4"><span>            
+                        <svg width="12px" height="10px"> 
+                            <use xlink:href="#check-4"></use>
+                        </svg></span><span>AM - Tuesday</span></label>
+                        <svg class="inline-svg">
+                            <symbol id="check-4" viewbox="0 0 12 10">
+                                <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                            </symbol>
+                        </svg>
+                    </td>
+                    <td><input type="checkbox" class="inp-cbx" id="filter-checkbox7">
+                        <label class="cbx" for="filter-checkbox7"><span>            
+                        <svg width="12px" height="10px"> 
+                            <use xlink:href="#check-7"></use>
+                        </svg></span><span>AM - Wednesday</span></label>
+                        <svg class="inline-svg">
+                            <symbol id="check-7" viewbox="0 0 12 10">
+                                <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                            </symbol>
+                        </svg>
+                    </td>
+                    <td><input type="checkbox" class="inp-cbx" id="filter-checkbox10">
+                        <label class="cbx" for="filter-checkbox10"><span>            
+                        <svg width="12px" height="10px"> 
+                            <use xlink:href="#check-10"></use>
+                        </svg></span><span>AM - Thursday</span></label>
+                        <svg class="inline-svg">
+                            <symbol id="check-10" viewbox="0 0 12 10">
+                                <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                            </symbol>
+                        </svg>
+                    </td>
+                    <td><input type="checkbox" class="inp-cbx" id="filter-checkbox13">
+                        <label class="cbx" for="filter-checkbox13"><span>            
+                        <svg width="12px" height="10px"> 
+                            <use xlink:href="#check-13"></use>
+                        </svg></span><span>AM - Friday</span></label>
+                        <svg class="inline-svg">
+                            <symbol id="check-13" viewbox="0 0 12 10">
+                                <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                            </symbol>
+                        </svg>
+                    </td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" class="inp-cbx" id="filter-checkbox2">
+                        <label class="cbx" for="filter-checkbox2"><span>            
+                        <svg width="12px" height="10px"> 
+                            <use xlink:href="#check-2"></use>
+                        </svg></span><span>PM - Monday</span></label>
+                        <svg class="inline-svg">
+                            <symbol id="check-2" viewbox="0 0 12 10">
+                                <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                            </symbol>
+                        </svg>
+                    </td>
+                    <td><input type="checkbox" class="inp-cbx" id="filter-checkbox5">
+                        <label class="cbx" for="filter-checkbox5"><span>            
+                        <svg width="12px" height="10px"> 
+                            <use xlink:href="#check-5"></use>
+                        </svg></span><span>PM - Tuesday</span></label>
+                        <svg class="inline-svg">
+                            <symbol id="check-5" viewbox="0 0 12 10">
+                                <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                            </symbol>
+                        </svg>
+                    </td>
+                    <td><input type="checkbox" class="inp-cbx" id="filter-checkbox8">
+                        <label class="cbx" for="filter-checkbox8"><span>            
+                        <svg width="12px" height="10px"> 
+                            <use xlink:href="#check-8"></use>
+                        </svg></span><span>PM - Wednesday</span></label>
+                        <svg class="inline-svg">
+                            <symbol id="check-8" viewbox="0 0 12 10">
+                                <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                            </symbol>
+                        </svg>
+                    </td>
+                    <td><input type="checkbox" class="inp-cbx" id="filter-checkbox11">
+                        <label class="cbx" for="filter-checkbox11"><span>            
+                        <svg width="12px" height="10px"> 
+                            <use xlink:href="#check-11"></use>
+                        </svg></span><span>PM - Thursday</span></label>
+                        <svg class="inline-svg">
+                            <symbol id="check-11" viewbox="0 0 12 10">
+                                <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                            </symbol>
+                        </svg>
+                    </td>
+                    <td><input type="checkbox" class="inp-cbx" id="filter-checkbox14">
+                        <label class="cbx" for="filter-checkbox14"><span>            
+                        <svg width="12px" height="10px"> 
+                            <use xlink:href="#check-14"></use>
+                        </svg></span><span>PM - Friday</span></label>
+                        <svg class="inline-svg">
+                            <symbol id="check-14" viewbox="0 0 12 10">
+                                <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                            </symbol>
+                        </svg>
+                    </td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" class="inp-cbx" id="filter-checkbox3">
+                        <label class="cbx" for="filter-checkbox3"><span>            
+                        <svg width="12px" height="10px"> 
+                            <use xlink:href="#check-3"></use>
+                        </svg></span><span>EVE - Monday</span></label>
+                        <svg class="inline-svg">
+                            <symbol id="check-3" viewbox="0 0 12 10">
+                                <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                            </symbol>
+                        </svg>
+                    </td>
+                    <td><input type="checkbox" class="inp-cbx" id="filter-checkbox6">
+                        <label class="cbx" for="filter-checkbox6"><span>            
+                        <svg width="12px" height="10px"> 
+                            <use xlink:href="#check-6"></use>
+                        </svg></span><span>EVE - Tuesday</span></label>
+                        <svg class="inline-svg">
+                            <symbol id="check-6" viewbox="0 0 12 10">
+                                <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                            </symbol>
+                        </svg>
+                    </td>
+                    <td><input type="checkbox" class="inp-cbx" id="filter-checkbox9">
+                        <label class="cbx" for="filter-checkbox9"><span>            
+                        <svg width="12px" height="10px"> 
+                            <use xlink:href="#check-9"></use>
+                        </svg></span><span>EVE - Wednesday</span></label>
+                        <svg class="inline-svg">
+                            <symbol id="check-9" viewbox="0 0 12 10">
+                                <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                            </symbol>
+                        </svg>
+                    </td>
+                    <td><input type="checkbox" class="inp-cbx" id="filter-checkbox12">
+                        <label class="cbx" for="filter-checkbox12"><span>            
+                        <svg width="12px" height="10px"> 
+                            <use xlink:href="#check-12"></use>
+                        </svg></span><span>EVE - Thursday</span></label>
+                        <svg class="inline-svg">
+                            <symbol id="check-12" viewbox="0 0 12 10">
+                                <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                            </symbol>
+                        </svg>
+                    </td>
+                    <td>
+                        <button id="reset-button" class="button-8" role="button">Reset Filters</button>
+                    </td>
+                </tr>
+                </table>
+            </div>
+            <div class="timeRangeBox">
+                <p>AM : 8:30am - 12:30pm</p>
+                <p>PM : 1:30pm - 5:30pm</p>
+                <p>EVE : 5:45pm - 10:45pm</p>
+            </div>
+        </div>
+    </div>
+    <style>
+        #checkbox-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .table-wrapper {
+            flex: 1;
+            margin-right: 10px; 
+        }
+        .checkbox-wrapper * {
+          box-sizing: border-box;
+        }
+        .checkbox-wrapper .cbx {
+          -webkit-user-select: none;
+          user-select: none;
+          cursor: pointer;
+          padding: 6px 8px;
+          border-radius: 6px;
+          overflow: hidden;
+          transition: all 0.2s ease;
+          display: inline-block;
+        }
+        .checkbox-wrapper .cbx:not(:last-child) {
+          margin-right: 6px;
+        }
+        .checkbox-wrapper .cbx:hover {
+          background: rgba(0,119,255,0.06);
+        }
+        .checkbox-wrapper .cbx span {
+          float: left;
+          vertical-align: middle;
+          transform: translate3d(0, 0, 0);
+        }
+        .checkbox-wrapper .cbx span:first-child {
+          position: relative;
+          width: 18px;
+          height: 18px;
+          border-radius: 4px;
+          transform: scale(1);
+          border: 1px solid #cccfdb;
+          transition: all 0.2s ease;
+          box-shadow: 0 1px 1px rgba(0,16,75,0.05);
+        }
+        .checkbox-wrapper .cbx span:first-child svg {
+          position: absolute;
+          top: 3px;
+          left: 2px;
+          fill: none;
+          stroke: #fff;
+          stroke-width: 2;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          stroke-dasharray: 16px;
+          stroke-dashoffset: 16px;
+          transition: all 0.3s ease;
+          transition-delay: 0.1s;
+          transform: translate3d(0, 0, 0);
+        }
+        .checkbox-wrapper .cbx span:last-child {
+          padding-left: 8px;
+          line-height: 18px;
+        }
+        .checkbox-wrapper .cbx:hover span:first-child {
+          border-color: rgb(113, 213, 148);
+        }
+        .checkbox-wrapper .inp-cbx {
+          position: absolute;
+          visibility: hidden;
+        }
+        .checkbox-wrapper .inp-cbx:checked + .cbx span:first-child {
+          background: rgb(113, 213, 148);
+          border-color: rgb(113, 213, 148);
+          animation: wave-4 0.4s ease;
+        }
+        .checkbox-wrapper .inp-cbx:checked + .cbx span:first-child svg {
+          stroke-dashoffset: 0;
+        }
+        .checkbox-wrapper .inline-svg {
+          position: absolute;
+          width: 0;
+          height: 0;
+          pointer-events: none;
+          user-select: none;
+        }
+        @media screen and (max-width: 640px) {
+          .checkbox-wrapper .cbx {
+            width: 100%;
+            display: inline-block;
+          }
+        }
+        @-moz-keyframes wave-4 {
+          50% {
+            transform: scale(0.9);
+          }
+        }
+        @-webkit-keyframes wave-4 {
+          50% {
+            transform: scale(0.9);
+          }
+        }
+        @-o-keyframes wave-4 {
+          50% {
+            transform: scale(0.9);
+          }
+        }
+        @keyframes wave-4 {
+          50% {
+            transform: scale(0.9);
+          }
+        }
+        .timeRangeBox {
+            position:static;
+            width:200px;
+            height: 120px;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-size: 15px;
+            font-weight:bold;
+            margin-top:20px;
+        }
+        .timeRangeBox p{
+            font-family:Arial, Helvetica, sans-serif;
+        }
+      </style>
+
+<div class="timetableCenter">
+    <table id="timetable">
+        <thead>
+            <tr id="header-row"></tr>
+        </thead>
+        <tbody id="timetable-body"></tbody>
+    </table>
+</div>
+    
+
+
+</body>
+
+
+</html>
